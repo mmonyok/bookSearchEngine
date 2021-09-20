@@ -3,10 +3,8 @@ const { User } = require('../models');
 
 const resolvers = {
   Query: {
-    user: async (parent, { username, id }) => {
-      return User.findOne({
-        $or: [{ _id: id }, { username: username }],
-      }).populate('savedBooks');
+    me: async (parent, { id }) => {
+      return User.findOne({ _id: id }).populate('savedBooks');
     }
   },
 
@@ -47,7 +45,7 @@ const resolvers = {
       if (context.user) {
         return User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedBooks: { bookId: args.bookId} } },
+          { $pull: { savedBooks: { bookId: args.bookId } } },
           { new: true }
         );
       }
