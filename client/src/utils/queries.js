@@ -5,7 +5,14 @@ export const GET_ME = gql`
     me {
       _id
       bookCount
-      savedBooks
+      savedBooks {
+        authors
+        description
+        bookId
+        image
+        link
+        title
+      }
     }
   }
 `;
