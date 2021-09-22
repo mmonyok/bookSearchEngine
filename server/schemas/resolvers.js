@@ -1,16 +1,19 @@
 const { AuthenticationError } = require('apollo-server-errors');
 const { User } = require('../models');
+const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    me: async (parent, { id }) => {
-      return User.findOne({ _id: id }).populate('savedBooks');
+    me: async (parent, args, context) => {
+      if (context.user) {
+        return User.findOne({ _id: context.user._id }).populate('savedBooks');
+      }
     }
   },
 
   Mutation: {
     login: async (parent, { email, password }) => {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: email });
 
       if (!user) {
         throw new AuthenticationError('No User with this email found!');
@@ -29,19 +32,23 @@ const resolvers = {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
 
+      if (!user) {
+        console.log('Could not creat a new user.');
+      }
+
       return { token, user };
     },
-    saveBook: async (parent, { user, body }, context) => {
+    saveBook: async (parent, args, context) => {
       if (context.user) {
         return User.findOneAndUpdate(
-          { _id: user._id },
-          { $addToSet: { savedBooks: body } },
+          { _id: context.user._id },
+          { $addToSet: { savedBooks: args } },
           { new: true, runValidators: true }
         );
       }
       throw new AuthenticationError("You need to be logged in!");
     },
-    removeBook: async (parent, args, { user }, context) => {
+    removeBook: async (parent, args, context) => {
       if (context.user) {
         return User.findOneAndUpdate(
           { _id: context.user._id },
