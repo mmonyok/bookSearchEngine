@@ -1,16 +1,17 @@
-// see SignupForm.js for comments
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-import Auth from '../utils/auth';
-
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER} from '../utils/mutations';
+import Auth from '../utils/auth';
 
 const LoginForm = () => {
+  // set initial form state
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
+  // set state for form validation
   const [validated] = useState(false);
+  // set state for alert
   const [showAlert, setShowAlert] = useState(false);
-
+  // obtaining access to this mutation
   const [login, {error}] = useMutation(LOGIN_USER);
 
   const handleInputChange = (event) => {
@@ -42,7 +43,7 @@ const LoginForm = () => {
       console.error(err);
       setShowAlert(true);
     }
-
+    // resetting the form data
     setUserFormData({
       username: '',
       email: '',
@@ -52,7 +53,9 @@ const LoginForm = () => {
 
   return (
     <>
+      {/* This is needed for the validation functionality above */}
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
+        {/* show alert if server response is bad */}
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your login credentials!
         </Alert>

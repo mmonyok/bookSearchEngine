@@ -3,8 +3,8 @@ import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap
 import { useMutation, useQuery } from '@apollo/client';
 import { REMOVE_BOOK } from '../utils/mutations';
 import { GET_ME } from '../utils/queries';
-import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
+import Auth from '../utils/auth';
 
 const SavedBooks = () => {
   const [removeBook, { error }] = useMutation(REMOVE_BOOK);

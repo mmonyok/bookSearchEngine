@@ -42,6 +42,7 @@ const SignupForm = () => {
       console.error(err);
     }
 
+    // resetting the form data
     setUserFormData({
       username: '',
       email: '',
